@@ -43,5 +43,8 @@ jobs:
       - name: test
         run: |
           ls
+          echo "ls"
           ls ..
+          echo "ls .."
           ls $GITHUB_WORKSPACE
+          cho "ls workspace"
