@@ -25,7 +25,7 @@ pub enum VerticalDirection {
 
 impl Distribution<VerticalDirection> for Standard {
     fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> VerticalDirection {
-        match rng.gen_range(0, 3) {
+        match rng.gen_range(0..3) {
             0 => VerticalDirection::None,
             1 => VerticalDirection::Up,
             _ => VerticalDirection::Down,
@@ -41,7 +41,7 @@ pub enum HorizontalDirection {
 
 impl Distribution<HorizontalDirection> for Standard {
     fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> HorizontalDirection {
-        match rng.gen_range(0, 3) {
+        match rng.gen_range(0..3) {
             0 => HorizontalDirection::None,
             1 => HorizontalDirection::Left,
             _ => HorizontalDirection::Right,

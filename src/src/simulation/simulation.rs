@@ -25,8 +25,8 @@ impl Simulation {
             subjects: (0..subjects_count)
                 .map(|_| Person {
                     position: Position {
-                        x: rng.gen_range(0, size.0 - 1),
-                        y: rng.gen_range(0, size.1 - 1),
+                        x: rng.gen_range(0..(size.0 - 1)),
+                        y: rng.gen_range(0..(size.1 - 1)),
                     },
                     state_history: vec![StateEvent {
                         state: State::random(repartition),
@@ -64,7 +64,7 @@ impl Simulation {
         match movement.vertical_direction {
             VerticalDirection::Up => {
                 let max_height = config.size.1 - 1;
-                let distance = rng.gen_range(0, speed + 1);
+                let distance = rng.gen_range(0..(speed + 1));
                 if position.y + distance >= max_height {
                     next_position.y = max_height;
                 } else {
@@ -72,7 +72,7 @@ impl Simulation {
                 }
             }
             VerticalDirection::Down => {
-                let distance = rng.gen_range(0, speed + 1);
+                let distance = rng.gen_range(0..(speed + 1));
                 if position.y as i32 - distance as i32 > 0 {
                     next_position.y -= distance;
                 } else {
@@ -84,7 +84,7 @@ impl Simulation {
 
         match movement.horizontal_direction {
             HorizontalDirection::Left => {
-                let distance = rng.gen_range(0, speed + 1);
+                let distance = rng.gen_range(0..(speed + 1));
                 if position.x as i32 - distance as i32 > 0 {
                     next_position.x -= distance;
                 } else {
@@ -93,7 +93,7 @@ impl Simulation {
             }
             HorizontalDirection::Right => {
                 let max_width = config.size.0 - 1;
-                let distance = rng.gen_range(0, speed + 1);
+                let distance = rng.gen_range(0..(speed + 1));
                 if position.x + distance >= max_width {
                     next_position.x = max_width;
                 } else {

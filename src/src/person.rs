@@ -32,7 +32,7 @@ impl State {
                 ..=(100 - repartition.sick_percentage))
                 .contains(value)
         };
-        let v = rand::thread_rng().gen_range(0, 100);
+        let v = rand::thread_rng().gen_range(0..100);
 
         if is_sick(&v) {
             State::Sick
