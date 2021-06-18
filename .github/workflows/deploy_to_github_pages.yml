@@ -17,7 +17,7 @@ jobs:
         with:
           toolchain: stable
       - name: Use Wasm-Pack
-        uses: jetli/wasm-pack-action@v0.3
+        uses: jetli/wasm-pack-action@v0.3.0
         with:
           version: ${{ matrix.wasm-pack-version }}
       - name: Build Rust src into wasm
