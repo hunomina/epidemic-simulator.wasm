@@ -34,14 +34,18 @@ jobs:
           npm install
           npm run build
 
-      - name: Checkout tools repo
+      - name: Checkout page repository
         uses: actions/checkout@v2
         with:
           repository: hunomina/epidemic-simulator.page
           path: page-repo
-          run: |
-            git config user.name hunomina
-            git config user.email hugo.f972@gmail.com
-            git add page-repo/*
-            git commit -m "Deploy to page (from $GITHUB_SHA)"
-            git push
+
+      - name: Push to page repository
+        working-directory: page-repo
+        run: |
+          git config user.name hunomina
+          git config user.email hugo.f972@gmail.com
+          cp ../web/dist/* ./
+          git add .
+          git commit -m "Deploy to page (from $GITHUB_SHA)"
+          git push
