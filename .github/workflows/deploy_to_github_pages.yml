@@ -38,6 +38,6 @@ jobs:
         env:
           GITHUB_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_PAGES_REPO_AUTHOR: hunomina
-          GITHUB_PAGES_REPO_NAME: epidemic-simulator.page
+          GITHUB_PAGES_REPO_NAME: hunomina.github.io/epidemic-simulator.page
           GITHUB_PAGES_RELEASE_BRANCH: main
           PROJECT_BUILD_FOLDER: web/dist
