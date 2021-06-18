@@ -21,15 +21,16 @@ jobs:
         with:
           version: ${{ matrix.wasm-pack-version }}
       - name: Build Rust src into wasm
-        run: (cd src && wasm-pack build)
+        working-directory: src
+        run: wasm-pack build
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
       - name: Build node
+        working-directory: web
         run: |
-          cd web
           npm install
           npm run build
       - name: Release Github Pages
