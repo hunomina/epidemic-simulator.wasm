@@ -39,12 +39,9 @@ jobs:
         with:
           repository: hunomina/epidemic-simulator.page
           path: page-repo
-
-      - name: test
-        run: |
-          ls
-          echo "ls"
-          ls ..
-          echo "ls .."
-          ls $GITHUB_WORKSPACE
-          cho "ls workspace"
+          run: |
+            git config user.name hunomina
+            git config user.email hugo.f972@gmail.com
+            git add page-repo/*
+            git commit -m "Deploy to page (from $GITHUB_SHA)"
+            git push
