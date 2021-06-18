@@ -40,4 +40,4 @@ jobs:
           GITHUB_PAGES_REPO_AUTHOR: hunomina
           GITHUB_PAGES_REPO_NAME: epidemic-simulator.page
           GITHUB_PAGES_RELEASE_BRANCH: main
-          PROJECT_BUILD_FOLDER: -f web/dist
+          PROJECT_BUILD_FOLDER: web/dist
