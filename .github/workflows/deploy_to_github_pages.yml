@@ -38,6 +38,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: hunomina/epidemic-simulator.page
+          token: ${{ secrets.DEPLOY_TO_PAGES_PAT }}
           path: page-repo
 
       - name: Push to page repository
