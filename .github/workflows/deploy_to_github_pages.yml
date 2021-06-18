@@ -34,13 +34,14 @@ jobs:
           npm install
           npm run build
 
-      - name: Push to page repository
-        uses: cpina/github-action-push-to-another-repository@v1.3
-        env:
-          API_TOKEN_GITHUB: ${{ secrets.GITHUB_TOKEN }}
+      - name: Checkout tools repo
+        uses: actions/checkout@v2
         with:
-          source-directory: web/dist
-          destination-github-username: hunomina
-          destination-repository-name: epidemic-simulator.page
-          user-email: hugo.f972@gmail.com
-          target-branch: main
+          repository: hunomina/epidemic-simulator.page
+          path: page-repo
+
+      - name: test
+        run: |
+          ls
+          ls ..
+          ls $GITHUB_WORKSPACE
