@@ -14,4 +14,4 @@ wasm-pack build
 npm run start
 ```
 
-Open [page](http://localhost:8080)
+You can find the running project [here](https://hunomina.github.io/epidemic-simulator/)
