@@ -6,7 +6,7 @@ let simulation = wasm.init_simulation(
     new wasm.Configuration(
         new wasm.Size(40, 40),
         new wasm.SubjectsRepartition(20, 5),
-        new wasm.Rules(1)
+        new wasm.Rules(1, 2)
     ),
     100
 );

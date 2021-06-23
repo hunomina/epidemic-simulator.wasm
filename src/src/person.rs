@@ -10,13 +10,18 @@ pub struct Person {
 }
 
 impl Person {
-    fn get_last_state(&self) -> Option<&StateEvent> {
+    pub fn current_state(&self) -> Option<&StateEvent> {
         self.state_history.iter().last()
+    }
+
+    pub fn is(&self, state: State) -> bool {
+        self.current_state()
+            .map_or_else(|| false, |state_event| state_event.state == state)
     }
 }
 
 #[wasm_bindgen]
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum State {
     Healthy,
     Sick,

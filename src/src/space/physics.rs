@@ -19,3 +19,7 @@ pub struct Position {
     pub x: usize,
     pub y: usize,
 }
+
+pub fn distance(p1: Position, p2: Position) -> f32 {
+    ((p2.x as f32 - p1.x as f32).powi(2) + (p2.y as f32 - p1.y as f32).powi(2)).sqrt()
+}

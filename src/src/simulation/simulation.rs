@@ -1,14 +1,17 @@
 use super::config::Configuration;
 use crate::{
     person::{Person, State, StateEvent},
-    space::{movement::*, physics::Position},
+    space::{
+        movement::*,
+        physics::{distance, Position},
+    },
 };
 use rand::Rng;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize)]
 pub struct Simulation {
-    counter: usize,
+    generation: usize,
     configuration: Configuration,
     subjects: Vec<Person>,
 }
@@ -20,7 +23,7 @@ impl Simulation {
         let repartition = configuration.subject_repartition;
 
         Simulation {
-            counter: 0,
+            generation: 0,
             configuration,
             subjects: (0..subjects_count)
                 .map(|_| Person {
@@ -38,8 +41,9 @@ impl Simulation {
     }
 
     pub fn next_generation(&mut self) {
-        self.counter += 1;
+        self.generation += 1;
         self.move_subjects();
+        self.update_subjects_state();
     }
 
     fn move_subjects(&mut self) {
@@ -100,8 +104,42 @@ impl Simulation {
                     next_position.x += distance;
                 }
             }
-            HorizontalDirection::None => {}
+            _ => {}
         }
         next_position
+    }
+
+    fn update_subjects_state(&mut self) {
+        let new_sicks = self
+            .subjects
+            .iter()
+            .enumerate()
+            .filter_map(|(i, subject)| {
+                if !subject.is(State::Healthy) {
+                    return None;
+                }
+                if let Some(_) = self.subjects.iter().enumerate().find(|(j, n)| {
+                    i != *j
+                        && n.is(State::Sick)
+                        && distance(subject.position, n.position)
+                            < self.configuration.rules.safe_distance
+                }) {
+                    return Some(i);
+                }
+                None
+            })
+            .collect::<Vec<_>>();
+
+        for new_sick in new_sicks.into_iter() {
+            self.subjects
+                .iter_mut()
+                .nth(new_sick)
+                .unwrap()
+                .state_history
+                .push(StateEvent {
+                    state: State::Sick,
+                    since: self.generation,
+                })
+        }
     }
 }
