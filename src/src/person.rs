@@ -1,4 +1,10 @@
-use crate::{simulation::config::SubjectsRepartition, space::physics::Position};
+use crate::{
+    simulation::{
+        config::SubjectsRepartition,
+        transmission::{Protection, TransmissionBlocker},
+    },
+    space::physics::Position,
+};
 use rand::Rng;
 use serde::{Deserialize, Serialize};
 use wasm_bindgen::prelude::*;
@@ -7,6 +13,7 @@ use wasm_bindgen::prelude::*;
 pub struct Person {
     pub position: Position,
     pub state_history: Vec<StateEvent>,
+    pub protections: Vec<Protection>,
 }
 
 impl Person {
@@ -17,6 +24,13 @@ impl Person {
     pub fn is(&self, state: State) -> bool {
         self.current_state()
             .map_or_else(|| false, |state_event| state_event.state == state)
+    }
+
+    pub fn protection_coefficient(&self) -> u8 {
+        self.protections.protection_coefficient()
+    }
+    pub fn contamination_reduction_coefficient(&self) -> u8 {
+        self.protections.contamination_reduction_coefficient()
     }
 }
 

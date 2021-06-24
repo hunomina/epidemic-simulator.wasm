@@ -1,6 +1,10 @@
 use std::collections::HashMap;
 
-use super::{config::Configuration, report::Report};
+use super::{
+    config::Configuration,
+    report::Report,
+    transmission::{get_random_protections, TransmissionEvaluator},
+};
 use crate::{
     person::{Person, State, StateEvent},
     space::{
@@ -38,6 +42,7 @@ impl Simulation {
                         state: State::random(repartition),
                         since: 0,
                     }],
+                    protections: get_random_protections(),
                 })
                 .collect(),
             reports: HashMap::new(),
@@ -48,6 +53,7 @@ impl Simulation {
         self.generation += 1;
         self.move_subjects();
         self.update_subjects_state();
+        self.create_report();
     }
 
     fn move_subjects(&mut self) {
@@ -73,19 +79,19 @@ impl Simulation {
             VerticalDirection::Up => {
                 let max_height = config.size.1 - 1;
                 let distance = rng.gen_range(0..(speed + 1));
-                if position.y + distance >= max_height {
-                    next_position.y = max_height;
+                next_position.y = if position.y + distance >= max_height {
+                    max_height
                 } else {
-                    next_position.y += distance;
-                }
+                    next_position.y + distance
+                };
             }
             VerticalDirection::Down => {
                 let distance = rng.gen_range(0..(speed + 1));
-                if position.y as i32 - distance as i32 > 0 {
-                    next_position.y -= distance;
+                next_position.y = if position.y as i32 - distance as i32 > 0 {
+                    next_position.y - distance
                 } else {
-                    next_position.y = 0;
-                }
+                    0
+                };
             }
             _ => {}
         }
@@ -93,20 +99,20 @@ impl Simulation {
         match movement.horizontal_direction {
             HorizontalDirection::Left => {
                 let distance = rng.gen_range(0..(speed + 1));
-                if position.x as i32 - distance as i32 > 0 {
-                    next_position.x -= distance;
+                next_position.x = if position.x as i32 - distance as i32 > 0 {
+                    next_position.x - distance
                 } else {
-                    next_position.x = 0;
-                }
+                    0
+                };
             }
             HorizontalDirection::Right => {
                 let max_width = config.size.0 - 1;
                 let distance = rng.gen_range(0..(speed + 1));
-                if position.x + distance >= max_width {
-                    next_position.x = max_width;
+                next_position.x = if position.x + distance >= max_width {
+                    max_width
                 } else {
-                    next_position.x += distance;
-                }
+                    next_position.x + distance
+                };
             }
             _ => {}
         }
@@ -122,28 +128,32 @@ impl Simulation {
                 if !subject.is(State::Healthy) {
                     return None;
                 }
-                if let Some(_) = self.subjects.iter().enumerate().find(|(j, n)| {
+                if let Some((_, n)) = self.subjects.iter().enumerate().find(|(j, n)| {
                     i != *j
                         && n.is(State::Sick)
                         && distance(subject.position, n.position)
                             < self.configuration.rules.safe_distance
                 }) {
-                    return Some(i);
+                    return Some((i, TransmissionEvaluator::evaluate(&subject, &n)));
                 }
                 None
             })
             .collect::<Vec<_>>();
 
-        for new_sick in new_sicks.into_iter() {
-            self.subjects
-                .iter_mut()
-                .nth(new_sick)
+        let mut rng = rand::thread_rng();
+        for (i, probability_to_become_sick) in new_sicks.into_iter() {
+            let target = self.subjects.iter_mut().nth(i).unwrap();
+            if probability_to_become_sick
+                .checked_sub(rng.gen_range(0..100))
+                .or(Some(0))
                 .unwrap()
-                .state_history
-                .push(StateEvent {
+                != 0
+            {
+                target.state_history.push(StateEvent {
                     state: State::Sick,
                     since: self.generation,
                 })
+            }
         }
     }
 
