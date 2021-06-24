@@ -1,4 +1,6 @@
-use super::config::Configuration;
+use std::collections::HashMap;
+
+use super::{config::Configuration, report::Report};
 use crate::{
     person::{Person, State, StateEvent},
     space::{
@@ -14,6 +16,7 @@ pub struct Simulation {
     generation: usize,
     configuration: Configuration,
     subjects: Vec<Person>,
+    reports: HashMap<usize, Report>,
 }
 
 impl Simulation {
@@ -37,6 +40,7 @@ impl Simulation {
                     }],
                 })
                 .collect(),
+            reports: HashMap::new(),
         }
     }
 
@@ -141,5 +145,19 @@ impl Simulation {
                     since: self.generation,
                 })
         }
+    }
+
+    fn create_report(&mut self) {
+        self.reports.insert(
+            self.generation,
+            self.subjects.iter().fold(Report::empty(), |mut acc, sub| {
+                match sub.current_state().unwrap().state {
+                    State::Healthy => acc.healthy += 1,
+                    State::Sick => acc.sick += 1,
+                    State::Recovered => acc.recovered += 1,
+                };
+                acc
+            }),
+        );
     }
 }
