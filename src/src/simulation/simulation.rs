@@ -27,7 +27,8 @@ impl Simulation {
     pub fn new(configuration: Configuration, subjects_count: usize) -> Simulation {
         let mut rng = rand::thread_rng();
         let size = configuration.size;
-        let repartition = configuration.subject_repartition;
+        let subject_repartition = configuration.subject_repartition;
+        let protection_repartition = configuration.protection_repartition;
 
         Simulation {
             generation: 0,
@@ -39,10 +40,10 @@ impl Simulation {
                         y: rng.gen_range(0..(size.1 - 1)),
                     },
                     state_history: vec![StateEvent {
-                        state: State::random(repartition),
+                        state: State::random(subject_repartition),
                         since: 0,
                     }],
-                    protections: get_random_protections(),
+                    protections: get_random_protections(protection_repartition),
                 })
                 .collect(),
             reports: HashMap::new(),

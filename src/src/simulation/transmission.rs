@@ -1,3 +1,4 @@
+use super::config::ProtectionRepartition;
 use crate::person::{Person, State};
 use rand::Rng;
 use serde::{Deserialize, Serialize};
@@ -63,22 +64,16 @@ impl TransmissionBlocker for Vec<Protection> {
     }
 }
 
-// todo : add to simulation configuration
-// todo front: onglet "états", "space", "protections"
-const VACIN_PROBABILITY: u8 = 35;
-const MASK_PROBABILITY: u8 = 20;
-const WASH_HAND_PROBABILITY: u8 = 50;
-
-pub fn get_random_protections() -> Vec<Protection> {
+pub fn get_random_protections(protection_repartition: ProtectionRepartition) -> Vec<Protection> {
     let mut protections = vec![];
     let mut rng = rand::thread_rng();
-    if rng.gen_range(0..100) <= MASK_PROBABILITY {
+    if rng.gen_range(0..100) <= protection_repartition.mask_percentage {
         protections.push(Protection::Mask);
     }
-    if rng.gen_range(0..100) <= WASH_HAND_PROBABILITY {
+    if rng.gen_range(0..100) <= protection_repartition.wash_hands_percentage {
         protections.push(Protection::WashHands);
     }
-    if rng.gen_range(0..100) <= VACIN_PROBABILITY {
+    if rng.gen_range(0..100) <= protection_repartition.vacin_percentage {
         protections.push(Protection::Vacin);
     }
     protections

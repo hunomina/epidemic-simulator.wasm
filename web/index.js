@@ -13,6 +13,11 @@ function getSimulationModel() {
                 get_input_value('sick_percentage_input'),
                 get_input_value('recovered_percentage_input'),
             ),
+            new wasm.ProtectionRepartition(
+                get_input_value('mask_percentage_input'),
+                get_input_value('wash_hands_percentage_input'),
+                get_input_value('vacin_percentage_input')
+            ),
             new wasm.Rules(
                 get_input_value('movement_speed_input'),
                 get_input_value('safe_distance_input', 'float'),
